@@ -22,8 +22,7 @@ export function getCurrentPosition(options = defaultOptions) {
       resolve(position)
     }, ()=>{
       reject("no hemos podido obtener tu ubicación")
-    }, {options}),
-    console.log("esto ES getCurrentPosition")
+    }, {options})
   })
 }
 

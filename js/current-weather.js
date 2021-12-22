@@ -67,10 +67,8 @@ import {getCurrentWeather} from './services/Weather.js'
 export default async function currentWeather() {
   //cómo funciona esta app
   //pedimos geo a usuario //
-  console.log('Esto ocurre ANTES de getCurrentPosition')
     const {lat, lon, isError} = await getLatLon()
     if(isError) return console.log('Ha ocurrido un error ubicándote')
-    console.log (lat, lon)
   // getCurrentPosition().then((data) => {
   //   console.log(data)
   // }).catch((message) => {
