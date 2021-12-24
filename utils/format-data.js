@@ -14,6 +14,7 @@ export function formatTemp(value) {
 }
 
 export function formatWeekList(rawData) {
+  debugger
   let dayList = []
   const weekList = []
   rawData.forEach((item, index) => {
