@@ -1,8 +1,8 @@
 import {getWeeklyWeather} from './services/Weather.js'
-import { getLatLon } from './geolocation.js'
+import {getLatLon } from './geolocation.js'
 import {formatWeekList} from '../utils/format-data.js'
 import {createDOM} from '../utils/dom.js'
-import { createPeriodTime} from './period-time.js'
+import {createPeriodTime} from './period-time.js'
 
 function tabPanelTemplate(id) {
   return `

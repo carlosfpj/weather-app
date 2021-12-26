@@ -15,7 +15,6 @@ export function createPeriodTime(weather) {
   //icon
   //date
   //description
-
   const temp = formatTemp(weather.main.temp)
 
   const dateOptions = {

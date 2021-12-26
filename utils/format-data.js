@@ -1,4 +1,3 @@
-
 const defaultDateOptions = {
   day: 'numeric',
   weekday: 'long',
@@ -14,14 +13,18 @@ export function formatTemp(value) {
 }
 
 export function formatWeekList(rawData) {
-  debugger
   let dayList = []
   const weekList = []
+  console.log(rawData)
   rawData.forEach((item, index) => {
+    const hour = new Date((item.dt*1000)).getHours()
     dayList.push(item)
-    if((index + 1) % 8 === 0) {
-      weekList.push(dayList)
-      dayList = []
+    if(index < rawData.length - 1) {
+      const nextHour = new Date(((rawData[index + 1]).dt) * 1000).getHours()
+      if(nextHour < 2) {
+          weekList.push(dayList)
+          dayList = []
+      }
     }
   })
   return weekList
