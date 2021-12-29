@@ -15,12 +15,12 @@ export function createPeriodTime(weather) {
   //icon
   //date
   //description
-  const temp = formatTemp(weather.main.temp)
-
   const dateOptions = {
     hour: 'numeric',
-    hour12: true,
+    hour12: true
   }
+
+  const temp = formatTemp(weather.main.temp)
   const date = formatDate(new Date(weather.dt * 1000), dateOptions)
 
   const config = {

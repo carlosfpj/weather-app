@@ -1,0 +1,137 @@
+const defaultConfig = {
+  open: true,
+  debug: true,
+  animatable: true
+}
+
+export default function draggable ($element, config = defaultConfig) {
+  if(!($element instanceof HTMLElement)) {
+    return console.warn(`Elemento invalido, se esperaba un elemento HTML y se recibió un ${$element}`)
+  }
+  const elementRect = $element.getBoundingClientRect()
+  const ELEMENT_BLOCK_SIZE = elementRect.height
+
+  const $marker = $element.querySelector('[data-marker]')
+  const MARKER_BLOCK_SIZE = $marker.getBoundingClientRect().height
+
+  const VISIBLE_Y_POSITION = 0
+  const HIDDEN_Y_POSITION = ELEMENT_BLOCK_SIZE - MARKER_BLOCK_SIZE
+
+  let widgetPosition = VISIBLE_Y_POSITION
+  let isDragging = false
+
+  let startY = 0
+
+  $marker.addEventListener('click', handleClick)
+  $marker.addEventListener('pointerdown', handlePointerDown)
+  $marker.addEventListener('pointerup', handlePointerUp)
+  $marker.addEventListener('pointerout', handlePointerOut)
+  $marker.addEventListener('pointercancel', handlePointerCancel)
+  $marker.addEventListener('pointermove', handlePointerMove)
+  if(config.animatable) {
+    setAnimations()
+  }
+
+  function handlePointerDown(event) {
+    logger('POINTER-DOWN')
+    //quien es event???
+    startDrag(event)
+  }
+
+  function handlePointerUp() {
+    logger('POINTER-UP')
+    dragEnd()
+  }
+
+  function handlePointerOut() {
+    logger('POINTER-OUT')
+    dragEnd()
+  }
+
+  function handlePointerCancel() {
+    logger('POINTER-CANCEL')
+    dragEnd()
+  }
+
+  function handlePointerMove(event) {
+    logger('POINTER-MOVE')
+    drag(event)
+  }
+
+  function startDrag(event) {
+    isDragging = true
+    startY = event.pageY || event.touches[0].pageY
+    logger(startY)
+  }
+
+  function setAnimations() {
+    $element.style.animations = 'margin-bottom .3s'
+  }
+
+  function bounce() {
+    if(widgetPosition < ELEMENT_BLOCK_SIZE / 2) {
+      return open()
+    }
+    return close()
+  }
+
+  function dragEnd() {
+    logger('DRAG END')
+    isDragging = false
+    bounce()
+  }
+
+  function handleClick(event) {
+    logger('CLICK')
+    Toggle()
+  }
+
+  function Toggle(){
+    if(!isDragging) {
+      if(!isOpen) {
+        open()
+      }else {
+        close()
+      }
+    }
+  }
+
+  let isOpen = config.open
+  isOpen ? open(): close()
+
+  function logger($message) {
+    if(config.debug) {
+      console.info($message)
+    }
+  }
+
+  function open () {
+    logger('Abrir Widget')
+    isOpen = true
+    widgetPosition = VISIBLE_Y_POSITION
+    setWidgetPosition(widgetPosition)
+  }
+
+  function close() {
+    logger('Cerrar Widget')
+    isOpen = false
+    widgetPosition = HIDDEN_Y_POSITION
+    setWidgetPosition(widgetPosition)
+  }
+
+  function setWidgetPosition (value) {
+    $element.style.marginBottom = `-${value}px`
+  }
+
+  function drag(event) {
+    const cursorY = event.pageY || event.touches[0].pageY
+    const movementY = cursorY - startY
+    widgetPosition = widgetPosition + movementY
+    startY = cursorY
+    if(widgetPosition > HIDDEN_Y_POSITION) {
+      return false
+    }
+
+    setWidgetPosition(widgetPosition)
+  }
+}
