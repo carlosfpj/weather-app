@@ -34,3 +34,8 @@
   inset-inline-end: 0;
 }
 
+.weather-features {
+  color: white;
+  display: flex;
+  justify-content: space-around;
+}

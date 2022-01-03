@@ -1,6 +1,6 @@
 import {getWeeklyWeather} from './services/Weather.js'
 import {getLatLon } from './geolocation.js'
-import {formatWeekList} from '../utils/format-data.js'
+import {formatWeekList, formatTemp} from '../utils/format-data.js'
 import {createDOM} from '../utils/dom.js'
 import {createPeriodTime} from './period-time.js'
 import draggable from './draggable.js'
@@ -26,15 +26,43 @@ function createTabPanel(id) {
 
 function configWeeklyWeather(weekList){
   const $container = document.querySelector('.tabs')
+  const extraData = []
+  let extraIndex = 0
 
   weekList.forEach((day, index) => {
     const $panel = createTabPanel(index)
     $container.append($panel)
     day.forEach((weather, indexWeather) => {
-      $panel.querySelector('.dayWeather-list').append(createPeriodTime(weather))
+      extraData.push(weather)
+      $panel.querySelector('.dayWeather-list').append(createPeriodTime(weather, extraIndex))
+      const dayList = document.querySelectorAll('.dayWeather-item')
+      dayList.forEach((element) => {
+        element.addEventListener("click", showExtraData)
+      })
+      extraIndex++;
     })
   })
+  function showExtraData(event) {
+    const dayList = document.querySelectorAll('.dayWeather-item')
+    const {
+      wind: {speed},
+      main: {temp_max, temp_min, humidity},
+    } = extraData[event.currentTarget.dataset.id]
+
+    const $showExtra = document.querySelector('.weather-features')
+    $showExtra.innerHTML = `
+      <div>
+        <p class="weather-max">Max: <strong>${formatTemp(temp_max)}</strong><p>
+        <p class="weather-min">Min: <strong>${formatTemp(temp_min)}</strong></p>
+      </div>
+      <div>
+        <p class="weather-wind">Viento: <strong>${speed} km/h</strong></p>
+        <p class="weather-humidity">Humedad: <strong>${humidity}%</strong></p>
+      </div>
+    `
+  }
 }
+
 
 export default async function weeklyWeather() {
   const { lat, lon, isError } = await getLatLon()
@@ -45,4 +73,6 @@ export default async function weeklyWeather() {
   configWeeklyWeather(weekList)
   const $container = document.querySelector('.weeklyWeather')
   draggable($container)
+  // const dayItemList = document.querySelectorAll('.dayWeather-item')
+  // showExtraData(dayItemList, weekList)
 }
